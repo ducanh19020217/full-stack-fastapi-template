@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 from sqlalchemy import Column, JSON
 
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, Relationship
+from app.models import SQLModel
 
 
 class EventSchedule(SQLModel, table=True):

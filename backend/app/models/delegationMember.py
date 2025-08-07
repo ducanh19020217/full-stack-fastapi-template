@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, ForeignKey, JSON, DateTime
 from sqlalchemy.orm import relationship
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship
 from uuid import UUID, uuid4
 from typing import Optional
+from app.models import SQLModel
 
 class DelegationMember(SQLModel, table=True):
     __tablename__ = "delegation_member"

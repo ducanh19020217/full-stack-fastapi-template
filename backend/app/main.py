@@ -8,11 +8,20 @@ from app.core.config import settings
 
 from app.i18n.i18n_config import setup_i18n
 from app.minio.minio_config import setup_minio_bucket
+from app.core.redis import redis_client
+
 import i18n
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
     return f"{route.tags[0]}-{route.name}"
+
+# Initialize Redis connection
+def startup_event():
+    try:
+        redis_client.ping()
+    except Exception as e:
+        raise e
 
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
@@ -26,6 +35,7 @@ app = FastAPI(
 
 setup_i18n()
 setup_minio_bucket()
+startup_event()
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:

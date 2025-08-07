@@ -1,5 +1,5 @@
 ### models/token.py
-from sqlmodel import SQLModel
+from app.models import SQLModel
 
 class Message(SQLModel):
     message: str

@@ -1,9 +1,10 @@
 import uuid
 from datetime import datetime
-from typing import Optional
-from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
+from typing import Optional, List
+from sqlmodel import Field, Relationship
 from app.models import User
 from enum import Enum
+from app.models import SQLModel
 
 
 class PartnerStatus(str, Enum):
@@ -32,6 +33,9 @@ class Partner(SQLModel, table=True):
 
     created_by: uuid.UUID = Field(foreign_key="user.id", nullable=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    partner_events: List["PartnerEvent"] = Relationship(back_populates="partner")
+
 
 class PartnerCreate(SQLModel):
     name: str

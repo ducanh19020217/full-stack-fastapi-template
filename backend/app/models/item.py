@@ -1,9 +1,10 @@
 ### models/item.py
 import uuid
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship
 from typing import Optional
 
 from app.models.user import User
+from app.models import SQLModel
 
 class ItemBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)

@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
 from typing import Optional
-from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
-from app.models import User
+from sqlmodel import Field, Relationship, UniqueConstraint
+
+from app.models import SQLModel, User
 
 class Unit(SQLModel, table=True):
     __tablename__ = "unit"

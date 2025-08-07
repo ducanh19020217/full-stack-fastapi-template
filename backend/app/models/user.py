@@ -3,7 +3,9 @@ from enum import Enum
 from typing import Optional
 
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship
+from app.models import SQLModel
+
 
 class ThemeMode(str, Enum):
     default = "default"
