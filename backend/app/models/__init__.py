@@ -25,6 +25,6 @@ from .audit import AuditLogCreate, LogResult
 from .delegationMember import DelegationMember
 from .event import Event
 from .eventSchedule import EventSchedule
-from .partner import Partner
+from .partner import (Partner, PartnerCreate, PartnerUpdate, PartnerResponse, PartnerFilter,PartnersResponse)
 from .partnerEvent import PartnerEvent
 from .recommendation import Recommendation
