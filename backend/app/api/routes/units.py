@@ -36,9 +36,9 @@ from app.models import (
     UnitRead,
     UnitFilterRequest,
     Unit,
-LogResult,
-AuditLogCreate,
-UnitUpdate
+    LogResult,
+    AuditLogCreate,
+    UnitUpdate
 )
 from app.utils import generate_new_account_email, send_email
 

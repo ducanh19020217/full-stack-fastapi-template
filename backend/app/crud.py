@@ -5,7 +5,10 @@ from sqlmodel import Session, select, func
 from sqlalchemy.orm import joinedload
 
 from app.core.security import get_password_hash, verify_password
-from app.models import UserBase,UnitRead,UnitUser,Item, ItemCreate, User, UserCreate, UserUpdate, UnitCreate, Unit, UnitFilterRequest,AuditLogCreate, AuditLog
+from app.models.user import UserBase, User, UserCreate, UserUpdate
+from app.models.unit import UnitRead, UnitUser, UnitCreate, Unit, UnitFilterRequest
+from app.models.item import Item, ItemCreate
+from app.models.audit import AuditLogCreate, AuditLog
 
 from app.utils import strip_accents
 

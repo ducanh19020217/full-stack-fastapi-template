@@ -21,6 +21,8 @@ fileConfig(config.config_file_name)
 from app.models import SQLModel  # noqa
 from app.core.config import settings # noqa
 
+from app.models import *
+
 target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -77,6 +79,7 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
+print("Models detected by Alembic:", target_metadata.tables.keys())
 
 if context.is_offline_mode():
     run_migrations_offline()

@@ -3,5 +3,8 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.8 (base-flask-cbr)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8 (base-flask-cbr)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="uv (backend)" project-jdk-type="Python SDK" />
+  <component name="PyPackaging">
+    <option name="earlyReleasesAsUpgrades" value="true" />
+  </component>
 </project>
