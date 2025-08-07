@@ -28,8 +28,7 @@ from app.models.user import (
     UserUpdateThemes,
 )
 
-from app.models.item import (Item,
-    Message,)
+from app.models.item import (Message)
 from app.utils import generate_new_account_email, send_email
 from app.minio.minio_utils import upload_file
 
@@ -239,7 +238,6 @@ def delete_user(
         raise HTTPException(
             status_code=403, detail="Super users are not allowed to delete themselves"
         )
-    statement = delete(Item).where(col(Item.owner_id) == user_id)
     session.exec(statement)  # type: ignore
     session.delete(user)
     session.commit()

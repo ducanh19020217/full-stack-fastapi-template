@@ -20,7 +20,6 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from app.models import (
-    Item,
     Message,
     UpdatePassword,
     User,
@@ -50,8 +49,8 @@ i18n.set("fallback", "en")
 @router.get("/test-translation")
 async def test_translation():
     return {
-        "vi": i18n.t("unit.created"),
-        "en": i18n.t("unit.created")
+        "vi": translate("unit.created"),
+        "en": translate("unit.created")
     }
 
 

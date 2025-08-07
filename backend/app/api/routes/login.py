@@ -27,56 +27,84 @@ from app.utils import (
 
 from app.core.auth import authenticate_user
 
+from app.models.token import TokenResponse
+
+from app.models.token import RefreshTokenRequest
+
+from app.core.auth import create_refresh_token
+
+from app.core.auth import verify_refresh_token
+
+from app.models import User
+
 router = APIRouter(tags=["login"])
 
-
-# @router.post("/login/access-token")
-# def login_access_token(
-#     session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-# ) -> Token:
-#     """
-#     OAuth2 compatible token login, get an access token for future requests
-#     """
-#     user = crud.authenticate(
-#         session=session, email=form_data.username, password=form_data.password
-#     )
-#     if not user:
-#         raise HTTPException(status_code=400, detail="Incorrect email or password")
-#     elif not user.is_active:
-#         raise HTTPException(status_code=400, detail="Inactive user")
-#     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-#     return Token(
-#         access_token=security.create_access_token(
-#             user.id, expires_delta=access_token_expires
-#         )
-#     )
-
-@router.post("/login/access-token")
+@router.post("/login/access-token", response_model=TokenResponse)
 async def login_access_token(
-        session: SessionDep,
-        form_data: OAuth2PasswordRequestForm = Depends()
-) -> dict:
-    """OAuth2 compatible token login, get an access token for future requests"""
-    print(form_data.username, form_data.password)
+    session: SessionDep,
+    form_data: OAuth2PasswordRequestForm = Depends()
+) -> Any:
+    """OAuth2 compatible token login, get both access and refresh tokens"""
     user = authenticate_user(
         session=session,
         email=form_data.username,
         password=form_data.password
     )
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password"
+        )
     if not user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Inactive user"
+        )
 
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        subject=str(user.id), expires_delta=access_token_expires
+    # Create both access and refresh tokens
+    access_token = create_access_token(subject=str(user.id))
+    refresh_token = create_refresh_token(subject=str(user.id))
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer"
     )
 
-    return {
-        "access_token": access_token,
-        "token_type": "bearer"
-    }
+@router.post("/refresh-token", response_model=TokenResponse)
+async def refresh_token(
+    session: SessionDep,
+    refresh_request: RefreshTokenRequest
+) -> Any:
+    """Get new access token using refresh token"""
+    user_id = verify_refresh_token(refresh_request.refresh_token)
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token"
+        )
+
+    # Verify user still exists and is active
+    user = session.get(User, user_id)
+    if not user or not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found or inactive"
+        )
+
+    # Create new tokens
+    new_access_token = create_access_token(subject=str(user.id))
+    new_refresh_token = create_refresh_token(subject=str(user.id))
+
+    # Revoke old refresh token
+    revoke_all_tokens(refresh_request.refresh_token)
+
+    return TokenResponse(
+        access_token=new_access_token,
+        refresh_token=new_refresh_token
+    )
+
+
 
 
 @router.post("/login/test-token", response_model=UserPublic)

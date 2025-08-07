@@ -7,7 +7,6 @@ from sqlalchemy.orm import joinedload
 from app.core.security import get_password_hash, verify_password
 from app.models.user import UserBase, User, UserCreate, UserUpdate
 from app.models.unit import UnitRead, UnitUser, UnitCreate, Unit, UnitFilterRequest
-from app.models.item import Item, ItemCreate
 from app.models.audit import AuditLogCreate, AuditLog
 
 from app.utils import strip_accents
@@ -51,14 +50,7 @@ def authenticate(*, session: Session, email: str, password: str) -> User | None:
     return db_user
 
 
-def create_item(*, session: Session, item_in: ItemCreate, owner_id: uuid.UUID) -> Item:
-    db_item = Item.model_validate(item_in, update={"owner_id": owner_id})
-    session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
-    return db_item
-
-def create_unit(*, session: Session, unit_create: UnitCreate, creator: uuid.UUID) -> Item:
+def create_unit(*, session: Session, unit_create: UnitCreate, creator: uuid.UUID) -> Any:
     db_unit = Unit.model_validate(unit_create, update={"created_by": creator})
     session.add(db_unit)
     session.commit()
@@ -110,7 +102,7 @@ def filter_units(session: Session, filters: UnitFilterRequest):
         enriched_units.append(unit_read)
     return enriched_units
 
-def create_log(*, session: Session, log_create: AuditLogCreate) -> Item:
+def create_log(*, session: Session, log_create: AuditLogCreate) -> Any:
     db_log = AuditLog.model_validate(log_create)
     session.add(db_log)
     session.commit()

@@ -19,7 +19,6 @@ from .unit import (
     UnitRead,
     UnitFilterRequest,
 )
-from .item import Item
 from .token import Message
 from .audit import AuditLogCreate, LogResult
 from .delegationMember import DelegationMember
